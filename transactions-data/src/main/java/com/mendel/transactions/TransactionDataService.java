@@ -15,7 +15,16 @@ public interface TransactionDataService {
    * @param transaction the transaction record to create
    * @return the created transaction record with generated ID
    */
-  TransactionRecord create(TransactionRecord transaction);
+  TransactionRecord create(final TransactionRecord transaction);
+
+  /**
+   * Retrieves a transaction record by its ID.
+   * 
+   * @param transactionId the ID of the transaction to retrieve
+   * @param loadChildren whether to load child transactions recursively
+   * @return the transaction record if found, null otherwise
+   */
+  TransactionRecord read(final Long transactionId, boolean loadChildren);
 
   /**
    * Updates an existing transaction record in the data store.
@@ -23,7 +32,7 @@ public interface TransactionDataService {
    * @param transaction the transaction record to update
    * @return the updated transaction record
    */
-  TransactionRecord update(TransactionRecord transaction);
+  TransactionRecord update(final TransactionRecord transaction);
 
   /**
    * Checks if a transaction record exists by its ID.
@@ -31,7 +40,7 @@ public interface TransactionDataService {
    * @param transactionId the ID of the transaction to check
    * @return true if the transaction exists, false otherwise
    */
-  boolean exists(Long transactionId);
+  boolean exists(final Long transactionId);
 
   /**
    * Retrieves all transaction records of a specific type.
@@ -39,5 +48,5 @@ public interface TransactionDataService {
    * @param type the transaction type to filter by
    * @return a list of transaction records matching the specified type
    */
-  List<TransactionRecord> getTransactionsByType(String type);
+  List<TransactionRecord> getTransactionsByType(final String type);
 }
