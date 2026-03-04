@@ -89,7 +89,49 @@ class TransactionDataServiceImplTest {
     TransactionRecord transactionRead = this.transactionDataService.read(id, false);
 
     // then
-    assertEquals(transaction, transactionRead);
+    assertEquals(transaction.getId(), transactionRead.getId());
+    assertEquals(transaction.getAmount(), transactionRead.getAmount());
+    assertEquals(transaction.getType(), transactionRead.getType());
+    assertEquals(transaction.getParentTransactionId(), transactionRead.getParentTransactionId());
+  }
+
+  @Test
+  void testReadWithDescendantsWithSuccess() {
+    // given
+    this.transactionDataService.create(
+        TransactionRecord.builder()
+            .id(1L)
+            .amount(Double.parseDouble("9.99"))
+            .type("purchase")
+            .build());
+    this.transactionDataService.create(
+        TransactionRecord.builder()
+            .id(2L)
+            .amount(Double.parseDouble("9.99"))
+            .type("purchase")
+            .parentTransactionId(1L)
+            .build());
+    this.transactionDataService.create(
+        TransactionRecord.builder()
+            .id(3L)
+            .amount(Double.parseDouble("9.99"))
+            .type("purchase")
+            .parentTransactionId(2L)
+            .build());
+    this.transactionDataService.create(
+        TransactionRecord.builder()
+            .id(4L)
+            .amount(Double.parseDouble("9.99"))
+            .type("purchase")
+            .parentTransactionId(2L)
+            .build());
+
+    // when
+    TransactionRecord transactionRead = this.transactionDataService.read(1L, true);
+
+    // then
+    assertTrue(transactionRead.getDescendants().isPresent());
+    assertEquals(3, transactionRead.getDescendants().get().size());
   }
 
   @Test

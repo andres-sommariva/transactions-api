@@ -21,10 +21,10 @@ public interface TransactionDataService {
    * Retrieves a transaction record by its ID.
    *
    * @param transactionId the ID of the transaction to retrieve
-   * @param loadChildren whether to load child transactions recursively
+   * @param loadDescendants whether to load descendant transactions recursively
    * @return the transaction record if found, null otherwise
    */
-  TransactionRecord read(final Long transactionId, boolean loadChildren);
+  TransactionRecord read(final Long transactionId, boolean loadDescendants);
 
   /**
    * Updates an existing transaction record in the data store.
