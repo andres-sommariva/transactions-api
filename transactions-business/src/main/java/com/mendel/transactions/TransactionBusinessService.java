@@ -21,9 +21,9 @@ public interface TransactionBusinessService {
    * Retrieves all transactions of a specific type.
    *
    * @param type the transaction type to filter by
-   * @return a list of transactions matching the specified type
+   * @return a list of transaction ids matching the specified type
    */
-  List<TransactionDTO> getTransactionsByType(final String type);
+  List<Long> getTransactionsByType(final String type);
 
   /**
    * Calculates the total amount for a transaction including all its child transactions.

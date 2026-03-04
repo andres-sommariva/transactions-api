@@ -1,5 +1,6 @@
 package com.mendel.transactions;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -104,8 +105,7 @@ public class TransactionsIT {
                 .content(transactionDetailsJson))
         .andExpect(status().isCreated())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().json(transactionDetailsJson))
-        .andReturn();
+        .andExpect(content().json(transactionDetailsJson));
 
     // update
     this.mockMvc
@@ -113,8 +113,47 @@ public class TransactionsIT {
             put("/transactions/{id}", transactionId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(transactionDetailsJson))
-        .andExpect(status().isNoContent())
-        .andReturn();
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  void testGetTransactionsByTypeWithEmptyList() throws Exception {
+    // given
+    String type = "typeforemptylist";
+
+    // when & then
+    this.mockMvc
+        .perform(get("/transactions/types/{type}", type))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json("[]"));
+  }
+
+  @Test
+  void testGetTransactionsByTypeWithValues() throws Exception {
+    // given
+    String type = "typefornonemptylist";
+    long transactionId = System.currentTimeMillis();
+    Transaction transactionDetails =
+        Transaction.builder().amount(Double.parseDouble("9.99")).type(type).build();
+    String transactionDetailsJson = toJson(transactionDetails);
+
+    // create
+    this.mockMvc
+        .perform(
+            put("/transactions/{id}", transactionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transactionDetailsJson))
+        .andExpect(status().isCreated())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json(transactionDetailsJson));
+
+    // when & then
+    this.mockMvc
+        .perform(get("/transactions/types/{type}", type))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json("[%s]".formatted(transactionId)));
   }
 
   private String toJson(Transaction transaction) {

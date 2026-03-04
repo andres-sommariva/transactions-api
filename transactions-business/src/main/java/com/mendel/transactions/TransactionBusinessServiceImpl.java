@@ -41,8 +41,9 @@ public class TransactionBusinessServiceImpl implements TransactionBusinessServic
   }
 
   @Override
-  public List<TransactionDTO> getTransactionsByType(String type) {
-    return List.of();
+  public List<Long> getTransactionsByType(String type) {
+    List<TransactionRecord> transactions = this.transactionDataService.getTransactionsByType(type);
+    return transactions.stream().map(TransactionRecord::getId).toList();
   }
 
   @Override

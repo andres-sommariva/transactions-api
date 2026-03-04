@@ -4,6 +4,7 @@ import com.mendel.transactions.TransactionBusinessService;
 import com.mendel.transactions.model.Transaction;
 import com.mendel.transactions.model.TransactionDTO;
 import java.net.URI;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +50,9 @@ public class TransactionsApiImpl implements TransactionsApi {
 
   @Override
   public ResponseEntity<?> getTransactionsByType(String type) {
-    return null;
+    List<Long> transactionIds =
+        this.transactionBusinessService.getTransactionsByType(type.toLowerCase());
+    return ResponseEntity.ok(transactionIds);
   }
 
   @Override

@@ -2,6 +2,7 @@ package com.mendel.transactions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import com.mendel.transactions.model.TransactionDTO;
 import com.mendel.transactions.model.TransactionRecord;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -80,5 +82,39 @@ class TransactionBusinessServiceImplTest {
     assertFalse(resultTransactionDTO.getIsNew());
     verify(this.transactionDataService, never()).create(any());
     verify(this.transactionDataService).update(any());
+  }
+
+  @Test
+  void testGetTransactionsByTypeWithEmptyList() {
+    // given
+    String type = "purchase";
+    doReturn(List.of()).when(this.transactionDataService).getTransactionsByType(type);
+
+    // when
+    List<Long> transactionIds = this.transactionBusinessService.getTransactionsByType(type);
+
+    // then
+    assertNotNull(transactionIds);
+    assertTrue(transactionIds.isEmpty());
+  }
+
+  @Test
+  void testGetTransactionsByTypeWithValues() {
+    // given
+    String type = "purchase";
+    doReturn(
+            List.of(
+                TransactionRecord.builder().id(1L).build(),
+                TransactionRecord.builder().id(2L).build()))
+        .when(this.transactionDataService)
+        .getTransactionsByType(type);
+
+    // when
+    List<Long> transactionIds = this.transactionBusinessService.getTransactionsByType(type);
+
+    // then
+    assertNotNull(transactionIds);
+    assertFalse(transactionIds.isEmpty());
+    assertEquals(2, transactionIds.size());
   }
 }
