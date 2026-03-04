@@ -28,19 +28,29 @@ public class GlobalExceptionHandler {
     return errors;
   }
 
-  @ExceptionHandler(HttpMessageNotReadableException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public Map<String, String> handleValidationExceptions(HttpMessageNotReadableException ex) {
-    Map<String, String> errors = new HashMap<>();
-    errors.put("message", ex.getMessage());
-    return errors;
-  }
-
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Map<String, String> handleValidationExceptions(MethodArgumentTypeMismatchException ex) {
     Map<String, String> errors = new HashMap<>();
     errors.put(ex.getName(), ex.getMessage());
+    return errors;
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Map<String, String> handleValidationExceptions(HttpMessageNotReadableException ex) {
+    return buildErrorWithMessage(ex.getMessage());
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Map<String, String> handleValidationExceptions(IllegalArgumentException ex) {
+    return buildErrorWithMessage(ex.getMessage());
+  }
+
+  private Map<String, String> buildErrorWithMessage(String message) {
+    Map<String, String> errors = new HashMap<>();
+    errors.put("message", message);
     return errors;
   }
 }

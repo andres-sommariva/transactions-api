@@ -19,6 +19,8 @@ public class TransactionsApiImpl implements TransactionsApi {
   public ResponseEntity<?> createOrUpdateTransaction(
       final Transaction newTransaction, final Long id) {
 
+    validateTransaction(id, newTransaction);
+
     TransactionDTO transactionDTO =
         TransactionDTO.builder()
             .id(id)
@@ -58,5 +60,11 @@ public class TransactionsApiImpl implements TransactionsApi {
   @Override
   public ResponseEntity<?> getTransactionsTotal(Long id) {
     return null;
+  }
+
+  private void validateTransaction(Long id, Transaction newTransaction) {
+    if (id.equals(newTransaction.getParentTransactionId())) {
+      throw new IllegalArgumentException("'parent_id' can not reference the current transaction.");
+    }
   }
 }

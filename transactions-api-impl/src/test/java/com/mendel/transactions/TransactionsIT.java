@@ -76,6 +76,27 @@ public class TransactionsIT {
   @Test
   void testCreateTransactionWithInvalidTransactionId() throws Exception {
     // given
+    long transactionId = System.currentTimeMillis();
+    Transaction transactionDetails =
+        Transaction.builder()
+            .amount(Double.parseDouble("9.99"))
+            .type("purchase")
+            .parentTransactionId(transactionId)
+            .build();
+    String transactionDetailsJson = toJson(transactionDetails);
+
+    // when & then
+    this.mockMvc
+        .perform(
+            put("/transactions/{id}", transactionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transactionDetailsJson))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void testCreateTransactionWithInvalidParentTransactionId() throws Exception {
+    // given
     Transaction transactionDetails =
         Transaction.builder().amount(Double.parseDouble("9.99")).type("purchase").build();
     String transactionDetailsJson = toJson(transactionDetails);
