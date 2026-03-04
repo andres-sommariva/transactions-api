@@ -1,7 +1,11 @@
 package com.mendel.transactions.model;
 
 import java.time.Instant;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Data
 @Builder

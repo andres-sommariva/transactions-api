@@ -1,9 +1,8 @@
 package com.mendel.transactions;
 
 import com.mendel.transactions.model.TransactionDTO;
-import java.util.List;
-
 import com.mendel.transactions.model.TransactionRecord;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

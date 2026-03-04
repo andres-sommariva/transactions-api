@@ -1,5 +1,13 @@
 package com.mendel.transactions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
 import com.mendel.transactions.model.TransactionDTO;
 import com.mendel.transactions.model.TransactionRecord;
 import org.junit.jupiter.api.Test;
@@ -7,10 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionBusinessServiceImplTest {
@@ -41,7 +45,8 @@ class TransactionBusinessServiceImplTest {
     assertEquals(transactionDTO.getId(), resultTransactionDTO.getId());
     assertEquals(transactionDTO.getAmount(), resultTransactionDTO.getAmount());
     assertEquals(transactionDTO.getType(), resultTransactionDTO.getType());
-    assertEquals(transactionDTO.getParentTransactionId(), resultTransactionDTO.getParentTransactionId());
+    assertEquals(
+        transactionDTO.getParentTransactionId(), resultTransactionDTO.getParentTransactionId());
     assertTrue(resultTransactionDTO.getIsNew());
     verify(this.transactionDataService).create(any());
     verify(this.transactionDataService, never()).update(any());
@@ -70,7 +75,8 @@ class TransactionBusinessServiceImplTest {
     assertEquals(transactionDTO.getId(), resultTransactionDTO.getId());
     assertEquals(transactionDTO.getAmount(), resultTransactionDTO.getAmount());
     assertEquals(transactionDTO.getType(), resultTransactionDTO.getType());
-    assertEquals(transactionDTO.getParentTransactionId(), resultTransactionDTO.getParentTransactionId());
+    assertEquals(
+        transactionDTO.getParentTransactionId(), resultTransactionDTO.getParentTransactionId());
     assertFalse(resultTransactionDTO.getIsNew());
     verify(this.transactionDataService, never()).create(any());
     verify(this.transactionDataService).update(any());
