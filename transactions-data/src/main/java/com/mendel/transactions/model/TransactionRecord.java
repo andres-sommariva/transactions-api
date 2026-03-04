@@ -15,5 +15,5 @@ public class TransactionRecord {
   private Double amount;
   private String type;
   private Long parentTransactionId;
-  private Optional<List<TransactionRecord>> descendants;
+  private Optional<List<TransactionRecord>> descendants = Optional.empty();
 }
