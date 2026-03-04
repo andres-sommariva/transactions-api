@@ -62,3 +62,17 @@ Returns:
   "sum": <double>
 }
 ```
+
+## Run with Docker
+
+### Build the Docker image
+
+```bash
+/transactions-api$ sudo docker build -t spring-boot-app:latest .
+```
+
+### Run the Docker container
+
+```bash
+/transactions-api$ sudo docker run -p 8080:8080 spring-boot-app:latest
+```
