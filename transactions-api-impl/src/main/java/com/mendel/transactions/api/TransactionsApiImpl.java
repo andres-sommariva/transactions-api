@@ -3,6 +3,7 @@ package com.mendel.transactions.api;
 import com.mendel.transactions.TransactionBusinessService;
 import com.mendel.transactions.model.Transaction;
 import com.mendel.transactions.model.TransactionDTO;
+import com.mendel.transactions.model.TransactionsTotal;
 import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,8 @@ public class TransactionsApiImpl implements TransactionsApi {
 
   @Override
   public ResponseEntity<?> getTransactionsTotal(Long id) {
-    return null;
+    Double totalAmount = this.transactionBusinessService.getTransactionsTotal(id);
+    return ResponseEntity.ok(TransactionsTotal.builder().transactionsTotal(totalAmount).build());
   }
 
   private void validateTransaction(Long id, Transaction newTransaction) {

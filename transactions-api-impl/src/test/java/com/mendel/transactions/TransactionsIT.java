@@ -177,6 +177,88 @@ public class TransactionsIT {
         .andExpect(content().json("[%s]".formatted(transactionId)));
   }
 
+  @Test
+  void testGetTransactionsTotalWithInvalidTransactionId() throws Exception {
+    // given
+    // ... an invalid transaction id
+
+    // when & then
+    this.mockMvc.perform(get("/transactions/sum/{id}", "null")).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void testGetTransactionsTotalWithoutDescendants() throws Exception {
+    // given
+    long transactionId = System.currentTimeMillis();
+    Transaction transactionDetails =
+        Transaction.builder().amount(Double.parseDouble("9.99")).type("purchase").build();
+    String transactionDetailsJson = toJson(transactionDetails);
+
+    // create
+    this.mockMvc
+        .perform(
+            put("/transactions/{id}", transactionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transactionDetailsJson))
+        .andExpect(status().isCreated())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json(transactionDetailsJson));
+
+    // when & then
+    this.mockMvc
+        .perform(get("/transactions/sum/{id}", transactionId))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json("{\"sum\":9.99}"));
+  }
+
+  @Test
+  void testGetTransactionsTotalWithDescendants() throws Exception {
+    // given
+    long transactionId = System.currentTimeMillis();
+
+    // create parent transaction
+    Transaction transactionDetails =
+        Transaction.builder().amount(Double.parseDouble("10.01")).type("purchase").build();
+    String transactionDetailsJson = toJson(transactionDetails);
+    this.mockMvc
+        .perform(
+            put("/transactions/{id}", transactionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transactionDetailsJson))
+        .andExpect(status().isCreated());
+
+    // create children transactions
+    transactionDetails =
+        Transaction.builder()
+            .amount(Double.parseDouble("10.01"))
+            .type("purchase")
+            .parentTransactionId(transactionId)
+            .build();
+    transactionDetailsJson = toJson(transactionDetails);
+
+    this.mockMvc
+        .perform(
+            put("/transactions/{id}", transactionId + 1000L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transactionDetailsJson))
+        .andExpect(status().isCreated());
+
+    this.mockMvc
+        .perform(
+            put("/transactions/{id}", transactionId + 2000L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(transactionDetailsJson))
+        .andExpect(status().isCreated());
+
+    // when & then
+    this.mockMvc
+        .perform(get("/transactions/sum/{id}", transactionId))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().json("{\"sum\":30.03}"));
+  }
+
   private String toJson(Transaction transaction) {
     String jsonString = null;
     ObjectMapper mapper = new ObjectMapper();
