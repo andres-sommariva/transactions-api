@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.mendel</groupId>
             <artifactId>transactions-api-spec</artifactId>
-            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -33,10 +32,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 
