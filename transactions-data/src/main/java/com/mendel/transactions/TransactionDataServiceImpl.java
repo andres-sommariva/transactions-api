@@ -163,6 +163,15 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     }
   }
 
+  /**
+   * Validates a transaction record for business rules.
+   * Checks if parent transaction exists and optionally validates for cyclic dependencies.
+   * 
+   * @param transaction the transaction to validate
+   * @param checkCycle whether to perform cycle validation (for updates)
+   * @throws NoSuchElementException if parent transaction is not found
+   * @throws IllegalArgumentException if cyclic dependency is detected
+   */
   private void validateTransaction(TransactionRecord transaction, boolean checkCycle) {
     if (transaction.getParentTransactionId() != null) {
       if (this.transactions.get(transaction.getParentTransactionId()) == null) {
@@ -174,6 +183,14 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     }
   }
 
+  /**
+   * Validates that a transaction does not create a cyclic dependency.
+   * Traverses up the parent hierarchy to ensure the transaction does not
+   * eventually reference itself as an ancestor.
+   * 
+   * @param transaction the transaction to validate for cycles
+   * @throws IllegalArgumentException if cyclic dependency is detected
+   */
   private void validateTransactionCycle(TransactionRecord transaction) {
     boolean hasCycle = false;
     TransactionEntity ancestorTransaction =
