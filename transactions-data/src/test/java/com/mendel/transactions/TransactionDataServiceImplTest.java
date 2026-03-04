@@ -47,6 +47,33 @@ class TransactionDataServiceImplTest {
   }
 
   @Test
+  void testCreateWithExceptionForInvalidParentId() {
+    // given
+    Long id = System.currentTimeMillis();
+    TransactionRecord transaction =
+        TransactionRecord.builder().id(id).type("type").parentTransactionId(1L).build();
+
+    // when & then
+    assertThrows(
+        NoSuchElementException.class, () -> this.transactionDataService.create(transaction));
+  }
+
+  @Test
+  void testCreateWithExceptionForParentIdWithCycle() {
+    // given
+    this.transactionDataService.create(TransactionRecord.builder().id(1L).type("type").build());
+    this.transactionDataService.create(
+        TransactionRecord.builder().id(2L).type("type").parentTransactionId(1L).build());
+
+    // when & then
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            this.transactionDataService.update(
+                TransactionRecord.builder().id(1L).type("type").parentTransactionId(2L).build()));
+  }
+
+  @Test
   void testReadWithSuccess() {
     // given
     Long id = System.currentTimeMillis();

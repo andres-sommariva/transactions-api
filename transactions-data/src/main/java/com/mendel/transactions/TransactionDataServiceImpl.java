@@ -19,6 +19,9 @@ public class TransactionDataServiceImpl implements TransactionDataService {
 
   @Override
   public TransactionRecord create(final TransactionRecord transaction) {
+
+    validateTransaction(transaction, false);
+
     Instant now = Instant.now();
     TransactionEntity newTransaction =
         TransactionEntity.builder()
@@ -47,7 +50,7 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     TransactionEntity currentTransaction = this.transactions.get(transactionId);
 
     if (currentTransaction == null) {
-      throw new NoSuchElementException();
+      throw new NoSuchElementException("Transaction not found.");
     }
 
     if (loadChildren) {
@@ -69,6 +72,8 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     if (currentTransaction == null) {
       throw new NoSuchElementException();
     }
+
+    validateTransaction(transaction, true);
 
     Instant now = Instant.now();
     TransactionEntity updatedTransaction =
@@ -155,6 +160,34 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     if (this.transactionIdsByType.containsKey(type)
         && this.transactionIdsByType.get(type).isEmpty()) {
       this.transactionIdsByType.remove(type);
+    }
+  }
+
+  private void validateTransaction(TransactionRecord transaction, boolean checkCycle) {
+    if (transaction.getParentTransactionId() != null) {
+      if (this.transactions.get(transaction.getParentTransactionId()) == null) {
+        throw new NoSuchElementException("Parent transaction not found.");
+      }
+      if (checkCycle) {
+        validateTransactionCycle(transaction);
+      }
+    }
+  }
+
+  private void validateTransactionCycle(TransactionRecord transaction) {
+    boolean hasCycle = false;
+    TransactionEntity ancestorTransaction =
+        this.transactions.get(transaction.getParentTransactionId());
+    while (ancestorTransaction.getParentId() != null) {
+      if (transaction.getId().equals(ancestorTransaction.getParentId())) {
+        hasCycle = true;
+        break;
+      }
+      ancestorTransaction = this.transactions.get(ancestorTransaction.getParentId());
+    }
+    if (hasCycle) {
+      throw new IllegalArgumentException(
+          "Transaction can not be saved due to cyclic dependency for the specified 'parent_id'.");
     }
   }
 }
