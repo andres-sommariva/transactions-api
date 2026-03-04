@@ -22,7 +22,7 @@ public class TransactionsApiImpl implements TransactionsApi {
         TransactionDTO.builder()
             .id(id)
             .amount(newTransaction.getAmount())
-            .type(newTransaction.getType())
+            .type(newTransaction.getType().toLowerCase())
             .parentTransactionId(newTransaction.getParentTransactionId())
             .build();
 

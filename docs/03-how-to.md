@@ -13,9 +13,14 @@ mvn spring-boot:run
 
 ## Test
 
-Unit + Integration tests
+Unit tests
 ```
 mvn test
+```
+
+Unit + Integration tests
+```
+mvn verify
 ```
 
 ## Use
