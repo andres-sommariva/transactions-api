@@ -62,7 +62,7 @@ public class TransactionDataServiceImpl implements TransactionDataService {
           getDescendantTransactionIds(transactionId, transactionId);
       descendantTransactions =
           descendantTransactionIds.stream()
-              .map(id -> this.transactions.get(id))
+              .map(this.transactions::get)
               .map(this::mapToTransactionRecord)
               .toList();
     }
@@ -124,7 +124,7 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     }
 
     return transactionIds.stream()
-        .map(id -> this.transactions.get(id))
+        .map(this.transactions::get)
         .map(this::mapToTransactionRecord)
         .toList();
   }
@@ -146,7 +146,7 @@ public class TransactionDataServiceImpl implements TransactionDataService {
         result.addAll(getDescendantTransactionIds(rootId, childrenId));
       }
     }
-    if (parentId != rootId) {
+    if (!rootId.equals(parentId)) {
       result.add(parentId);
     }
 
