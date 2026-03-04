@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import com.mendel.transactions.model.TransactionDTO;
 import com.mendel.transactions.model.TransactionRecord;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -116,5 +117,55 @@ class TransactionBusinessServiceImplTest {
     assertNotNull(transactionIds);
     assertFalse(transactionIds.isEmpty());
     assertEquals(2, transactionIds.size());
+  }
+
+  @Test
+  void testGetTransactionsTotalWithoutDescendants() {
+    // given
+    doReturn(
+            TransactionRecord.builder()
+                .id(1L)
+                .amount(Double.parseDouble("10.00"))
+                .descendants(Optional.empty())
+                .build())
+        .when(this.transactionDataService)
+        .read(1L, true);
+
+    // when
+    Double total = this.transactionBusinessService.getTransactionsTotal(1L);
+
+    // then
+    assertEquals(Double.parseDouble("10.00"), total);
+  }
+
+  @Test
+  void testGetTransactionsTotalWithDescendants() {
+    // given
+    doReturn(
+            TransactionRecord.builder()
+                .id(1L)
+                .amount(Double.parseDouble("10.00"))
+                .descendants(
+                    Optional.of(
+                        List.of(
+                            TransactionRecord.builder()
+                                .id(2L)
+                                .amount(Double.parseDouble("5.01"))
+                                .parentTransactionId(1L)
+                                .build(),
+                            TransactionRecord.builder()
+                                .id(3L)
+                                .amount(Double.parseDouble("3.01"))
+                                .parentTransactionId(1L)
+                                .build())))
+                .build())
+        .when(this.transactionDataService)
+        .read(1L, true);
+
+    // when
+    Double total = this.transactionBusinessService.getTransactionsTotal(1L);
+
+    // then
+    assertEquals(Double.parseDouble("18.02"), total);
   }
 }

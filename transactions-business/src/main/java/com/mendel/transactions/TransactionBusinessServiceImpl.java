@@ -48,6 +48,16 @@ public class TransactionBusinessServiceImpl implements TransactionBusinessServic
 
   @Override
   public Double getTransactionsTotal(Long transactionId) {
-    return 0.0;
+    TransactionRecord transaction = this.transactionDataService.read(transactionId, true);
+
+    Double descendantsTotalAmount =
+        (transaction.getDescendants().isPresent()
+            ? transaction.getDescendants().get().stream()
+                .map(TransactionRecord::getAmount)
+                .mapToDouble(Double::doubleValue)
+                .sum()
+            : Double.parseDouble("0.0"));
+
+    return Double.sum(transaction.getAmount(), descendantsTotalAmount);
   }
 }
