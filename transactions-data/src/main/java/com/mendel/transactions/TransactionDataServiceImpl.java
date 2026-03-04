@@ -18,14 +18,15 @@ public class TransactionDataServiceImpl implements TransactionDataService {
   @Override
   public TransactionRecord create(final TransactionRecord transaction) {
     Instant now = Instant.now();
-    TransactionEntity newTransaction = TransactionEntity.builder()
-        .id(transaction.getId())
-        .amount(transaction.getAmount())
-        .type(transaction.getType())
-        .parentId(transaction.getParentTransactionId())
-        .createdAt(now)
-        .updatedAt(now)
-        .build();
+    TransactionEntity newTransaction =
+        TransactionEntity.builder()
+            .id(transaction.getId())
+            .amount(transaction.getAmount())
+            .type(transaction.getType())
+            .parentId(transaction.getParentTransactionId())
+            .createdAt(now)
+            .updatedAt(now)
+            .build();
 
     TransactionEntity result = this.data.putIfAbsent(newTransaction.getId(), newTransaction);
 
@@ -65,16 +66,18 @@ public class TransactionDataServiceImpl implements TransactionDataService {
     }
 
     Instant now = Instant.now();
-    TransactionEntity updatedTransaction = TransactionEntity.builder()
-        .id(transaction.getId())
-        .amount(transaction.getAmount())
-        .type(transaction.getType())
-        .parentId(transaction.getParentTransactionId())
-        .createdAt(currentTransaction.getCreatedAt())
-        .updatedAt(now)
-        .build();
+    TransactionEntity updatedTransaction =
+        TransactionEntity.builder()
+            .id(transaction.getId())
+            .amount(transaction.getAmount())
+            .type(transaction.getType())
+            .parentId(transaction.getParentTransactionId())
+            .createdAt(currentTransaction.getCreatedAt())
+            .updatedAt(now)
+            .build();
 
-    boolean updated = this.data.replace(updatedTransaction.getId(), currentTransaction, updatedTransaction);
+    boolean updated =
+        this.data.replace(updatedTransaction.getId(), currentTransaction, updatedTransaction);
 
     if (!updated) {
       throw new ConcurrentModificationException();

@@ -19,7 +19,7 @@ public interface TransactionDataService {
 
   /**
    * Retrieves a transaction record by its ID.
-   * 
+   *
    * @param transactionId the ID of the transaction to retrieve
    * @param loadChildren whether to load child transactions recursively
    * @return the transaction record if found, null otherwise

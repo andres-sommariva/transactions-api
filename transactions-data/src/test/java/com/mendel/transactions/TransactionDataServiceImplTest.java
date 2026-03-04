@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.mendel.transactions.model.TransactionRecord;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -67,9 +66,7 @@ class TransactionDataServiceImplTest {
     Long id = System.currentTimeMillis();
 
     // when & then
-    assertThrows(
-        NoSuchElementException.class,
-        () -> this.transactionDataService.read(id, false));
+    assertThrows(NoSuchElementException.class, () -> this.transactionDataService.read(id, false));
   }
 
   @Test
