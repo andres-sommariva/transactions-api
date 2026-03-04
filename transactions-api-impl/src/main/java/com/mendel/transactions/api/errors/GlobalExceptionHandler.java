@@ -2,6 +2,8 @@ package com.mendel.transactions.api.errors;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -45,6 +47,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(IllegalArgumentException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Map<String, String> handleValidationExceptions(IllegalArgumentException ex) {
+    return buildErrorWithMessage(ex.getMessage());
+  }
+
+  @ExceptionHandler(NoSuchElementException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Map<String, String> handleValidationExceptions(NoSuchElementException ex) {
     return buildErrorWithMessage(ex.getMessage());
   }
 
